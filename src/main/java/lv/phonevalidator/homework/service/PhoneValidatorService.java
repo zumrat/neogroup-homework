@@ -2,9 +2,11 @@ package lv.phonevalidator.homework.service;
 
 import lv.phonevalidator.homework.entity.CountryCodeEntity;
 import lv.phonevalidator.homework.entity.CountryEntity;
+import lv.phonevalidator.homework.exception.PhoneValidatorException;
 import lv.phonevalidator.homework.mapper.CountryMapper;
 import lv.phonevalidator.homework.model.CountryDTO;
 import lv.phonevalidator.homework.repository.CountryCodeRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -24,8 +26,11 @@ public class PhoneValidatorService {
         this.countryCodeRepository = countryCodeRepository;
     }
 
-    public List<CountryDTO> findCountriesByPhone(String number) {
-        var onlyDigits = number.replaceAll("^\\D", "");
+    public List<CountryDTO> findCountriesByPhone(String number) throws PhoneValidatorException {
+        var onlyDigits = number.replaceAll("\\D", "");
+        if (StringUtils.isBlank(onlyDigits)) {
+            throw new PhoneValidatorException("Invalid phone number provided");
+        }
 
         var countryCodes = countryCodeRepository.findAllWhereStartWithCountryCode(onlyDigits);
 

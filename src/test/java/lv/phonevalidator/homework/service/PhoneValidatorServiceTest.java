@@ -2,6 +2,7 @@ package lv.phonevalidator.homework.service;
 
 import lv.phonevalidator.homework.entity.CountryCodeEntity;
 import lv.phonevalidator.homework.entity.CountryEntity;
+import lv.phonevalidator.homework.exception.PhoneValidatorException;
 import lv.phonevalidator.homework.mapper.CountryMapper;
 import lv.phonevalidator.homework.model.CountryCodeDTO;
 import lv.phonevalidator.homework.model.CountryDTO;
@@ -41,7 +42,7 @@ class PhoneValidatorServiceTest {
                                   String number,
                                   Set<CountryCodeEntity> expectedCountryCodes,
                                   CountryDTO countryDTO,
-                                  List<CountryDTO> result) {
+                                  List<CountryDTO> result) throws PhoneValidatorException {
         // Set up
         when(countryCodeRepository.findAllWhereStartWithCountryCode(anyString())).thenReturn(expectedCountryCodes);
         when(countryMapper.toCountryDTO(any())).thenReturn(countryDTO);
@@ -107,7 +108,7 @@ class PhoneValidatorServiceTest {
     }
 
     @Test
-    void testFindCountriesByPhoneWhenMultipleCountriesFound() {
+    void testFindCountriesByPhoneWhenMultipleCountriesFound() throws PhoneValidatorException {
         //Set up
         var number = "11165384765";
         var canada = createCountryEntity("Canada", 1L);
